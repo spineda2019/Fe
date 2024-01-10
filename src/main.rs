@@ -15,7 +15,6 @@ fn main() -> Result<(), std::io::Error> {
 
     let source_file: &str = &args[1];
     println!("Compiling {source_file}!");
-    // TODO: Open File
     // TODO: Parse whitespace delimited words
     // TODO: Classify as tokens
     // TODO: load in to table
