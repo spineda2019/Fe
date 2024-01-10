@@ -1,1 +1,6 @@
-position = initial + rate * 60
+// From the book
+position = initial + rate * 60;
+
+// what I want
+variable speed = 30: sint32;
+constant limit = 65: uint8;
