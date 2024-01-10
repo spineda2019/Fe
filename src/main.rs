@@ -1,7 +1,7 @@
 mod lexer;
 mod symbol_table;
 use std::io::ErrorKind;
-use symbol_table::{token::Token, SymbolTable};
+use symbol_table::token::Token;
 
 fn main() -> Result<(), std::io::Error> {
     println!("Hello, Compiler!");
@@ -22,7 +22,6 @@ fn main() -> Result<(), std::io::Error> {
     let file: std::fs::File = std::fs::File::open(source_file)?;
     let tokens: Vec<Token> = lexer::tokenize_file(&file)?;
 
-    let symbol_table: SymbolTable = SymbolTable::init();
-
+    dbg!(&tokens);
     Ok(())
 }
