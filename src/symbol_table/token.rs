@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum Token {
     NumberLiteral(isize),
     Identifier(String), // identifier, table_pointer
