@@ -1,7 +1,7 @@
 mod lexer;
 mod symbol_table;
 use std::io::ErrorKind;
-use symbol_table::SymbolTable;
+use symbol_table::{token::Token, SymbolTable};
 
 fn main() -> Result<(), std::io::Error> {
     println!("Hello, Compiler!");
@@ -19,7 +19,10 @@ fn main() -> Result<(), std::io::Error> {
     // TODO: Parse whitespace delimited words
     // TODO: Classify as tokens
     // TODO: load in to table
-    let symbol_table = SymbolTable::init();
+    let file: std::fs::File = std::fs::File::open(source_file)?;
+    let tokens: Vec<Token> = lexer::tokenize_file(&file)?;
+
+    let symbol_table: SymbolTable = SymbolTable::init();
 
     Ok(())
 }
