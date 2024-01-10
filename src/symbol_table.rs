@@ -7,7 +7,8 @@ pub struct SymbolTable {
 
 impl SymbolTable {
     pub fn init() -> Self {
-        let map = std::collections::HashMap::<Token, Option<String>>::new();
+        let map: std::collections::HashMap<Token, Option<String>> =
+            std::collections::HashMap::<Token, Option<String>>::new();
         SymbolTable { table: map }
     }
 }
