@@ -17,6 +17,7 @@ fn classify_word(word: &str) -> Token {
 pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
     let reader: BufReader<&File> = BufReader::new(file);
     let mut line: String;
+    let mut tokens: Vec<Token> = Vec::new();
 
     for file_line in reader.lines() {
         line = match file_line {
@@ -25,8 +26,9 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
         };
 
         for word in line.split_whitespace() {
-            classify_word(word);
+            tokens.push(classify_word(word));
         }
     }
-    todo!();
+
+    Ok(tokens)
 }
