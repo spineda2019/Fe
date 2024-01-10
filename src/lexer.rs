@@ -16,7 +16,7 @@ fn classify_word(word: &str) -> Token {
 
 pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
     let reader: BufReader<&File> = BufReader::new(file);
-    let mut line: String = String::new();
+    let mut line: String;
 
     for file_line in reader.lines() {
         line = match file_line {
