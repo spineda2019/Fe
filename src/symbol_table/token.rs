@@ -3,6 +3,8 @@ pub enum Token {
     NumberLiteral(isize),
     Identifier(String), // identifier, table_pointer
     Operator(char),
+    TypeName(String),
+    Punctuation(char),
 }
 
 impl Token {
@@ -24,5 +26,17 @@ impl Token {
             Err(_) => panic!("This should not happen! {operator}"),
         };
         Token::Operator(operator_char)
+    }
+
+    pub fn new_punctuation(punctuation: &str) -> Self {
+        let punctuation_char: char = match punctuation.parse::<char>() {
+            Ok(x) => x,
+            Err(_) => panic!("This should not happen! {punctuation}"),
+        };
+        Token::Punctuation(punctuation_char)
+    }
+
+    pub fn new_type_name(type_name: &str) -> Self {
+        Token::TypeName(type_name.to_string())
     }
 }
