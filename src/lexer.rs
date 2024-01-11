@@ -24,6 +24,16 @@ fn separates_a_lexeme(character: &char) -> bool {
 }
 
 #[inline]
+fn is_a_grouping_symbol(word: &str) -> bool {
+    let charred_word: char = match word.parse::<char>() {
+        Ok(x) => x,
+        Err(_) => return false,
+    };
+
+    VALID_GROUPING_SYMBOLS.contains(&charred_word)
+}
+
+#[inline]
 fn is_an_operator(word: &str) -> bool {
     let charred_word: char = match word.parse::<char>() {
         Ok(x) => x,
@@ -46,6 +56,7 @@ fn is_a_punctuation(word: &str) -> bool {
 fn classify_word(word: &str) -> Token {
     match word {
         op if is_an_operator(op) => Token::new_operator(op),
+        gr if is_a_grouping_symbol(gr) => Token::new_grouping_symbol(gr),
         punc if is_a_punctuation(punc) => Token::new_punctuation(punc),
         ty if is_a_fe_type(ty) => Token::new_type_name(ty),
         y if y.parse::<isize>().is_ok() => Token::new_number_literal(y),

@@ -5,6 +5,7 @@ pub enum Token {
     Operator(char),
     TypeName(String),
     Punctuation(char),
+    GroupingSymbol(char),
 }
 
 impl Token {
@@ -38,5 +39,14 @@ impl Token {
 
     pub fn new_type_name(type_name: &str) -> Self {
         Token::TypeName(type_name.to_string())
+    }
+
+    pub fn new_grouping_symbol(grouping_symbol: &str) -> Self {
+        let group_char: char = match grouping_symbol.parse::<char>() {
+            Ok(x) => x,
+            Err(_) => panic!("This should not happen! {grouping_symbol}"),
+        };
+
+        Token::GroupingSymbol(group_char)
     }
 }
