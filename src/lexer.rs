@@ -15,7 +15,11 @@ const VALID_TYPE_NAMES: [&str; 9] = [
 const VALID_DECLARATION_KEYWORDS: [&str; 3] = ["class", "function", "method"];
 const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];
 
-fn peeking_reveals_compound(current_char: &char, peeked_char: &Option<&char>) -> bool {
+fn peeking_reveals_compound(
+    current_char: &char,
+    peeked_char: &Option<&char>,
+    potential_incomplete_operator: &str,
+) -> Result<bool, Error> {
     todo!();
 }
 
@@ -56,7 +60,7 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
             dbg!(&most_recent_lexeme);
             // TODO: Implement some peeking
             if !separates_a_lexeme(&character)
-                || peeking_reveals_compound(&character, &characters.peek())
+                || peeking_reveals_compound(&character, &characters.peek(), &most_recent_lexeme)?
             {
                 most_recent_lexeme.push(character);
                 continue;
