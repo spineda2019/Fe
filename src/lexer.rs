@@ -15,6 +15,12 @@ const VALID_TYPE_NAMES: [&str; 9] = [
 const VALID_DECLARATION_KEYWORDS: [&str; 3] = ["class", "function", "method"];
 const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];
 
+/// Check if the current character encountered is part of a compound operator
+/// # Arguments
+/// * `current_char` - The current character being processed by the lexer.
+/// * `peeked_char` - the character immediately after current_char in the file. Not consumed.
+/// * `potential_incomplete_operator` - The most recent built up lexeme from the lexer. If the
+/// current character doesn't make syntactic sense with this, we will return an error
 fn peeking_reveals_compound(
     current_char: &char,
     peeked_char: &Option<&char>,
@@ -23,6 +29,7 @@ fn peeking_reveals_compound(
     todo!();
 }
 
+/// Classify the most recent processed lexeme from the lexer as a Token
 fn classify_word(word: &str) -> Token {
     match word {
         decl if is_a_declaration_keyword(decl) => Token::new_declartion_keyword(decl),
@@ -36,6 +43,7 @@ fn classify_word(word: &str) -> Token {
     }
 }
 
+/// This lexes the input file, and is "the lexer"
 pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
     let reader: BufReader<&File> = BufReader::new(file);
     let mut tokens: Vec<Token> = Vec::new();
