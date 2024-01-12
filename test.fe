@@ -2,5 +2,21 @@
 position = initial + rate * 60;
 
 // what I want
+//statements (no value)
+
 variable speed = 30: sint32;
 constant limit = 65: uint8;
+
+//classes 
+
+class Vehicle {
+    public:
+        method foo(x: sint64) -> boolean {
+            return x > 10;
+        }
+            
+    private:
+        method helper(y: uint8) -> uint8 {
+            return y + 2;
+        }
+} // Vehicle
