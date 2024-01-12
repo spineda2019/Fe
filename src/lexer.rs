@@ -29,11 +29,11 @@ fn classify_word(word: &str) -> Token {
 
 pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
     let reader: BufReader<&File> = BufReader::new(file);
-    let mut line: String;
     let mut tokens: Vec<Token> = Vec::new();
+    let file_lines = reader.lines().peekable();
 
-    for file_line in reader.lines() {
-        line = match file_line {
+    for line in file_lines {
+        let line = match line {
             Ok(x) => x,
             Err(y) => return Err(y),
         };
