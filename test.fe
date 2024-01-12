@@ -1,13 +1,13 @@
-// From the book
+# From the book
 position = initial + rate * 60;
 
-// what I want
-//statements (no value)
+# what I want
+#statements (no value)
 
 variable speed = 30: sint32;
 constant limit = 65: uint8;
 
-//classes 
+#classes 
 
 class Vehicle {
     public:
@@ -19,4 +19,4 @@ class Vehicle {
         method helper(y: uint8) -> uint8 {
             return y + 2;
         }
-} // Vehicle
+} # Vehicle
