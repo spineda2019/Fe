@@ -5,6 +5,7 @@ use std::{
 };
 
 const VALID_OPERATORS: [char; 6] = ['*', '+', '/', '-', '=', ':'];
+const VALID_COMPOUND_OPERATORS: [&str; 5] = ["+=", "-=", "/=", "*=", "->"];
 const VALID_GROUPING_SYMBOLS: [char; 2] = ['(', ')'];
 const VALID_SCOPE_SYMBOLS: [char; 2] = ['{', '}'];
 const VALID_PUNCTUATIONS: [char; 1] = [';'];
@@ -13,6 +14,10 @@ const VALID_TYPE_NAMES: [&str; 9] = [
 ];
 const VALID_DECLARATION_KEYWORDS: [&str; 3] = ["class", "function", "method"];
 const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];
+
+fn peeking_reveals_compound(current_char: &char, peeked_char: &Option<&char>) -> bool {
+    todo!();
+}
 
 fn classify_word(word: &str) -> Token {
     match word {
@@ -43,12 +48,16 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
             continue;
         }
 
+        let mut characters = line.chars().peekable();
+
         let mut most_recent_lexeme: String = String::new();
-        for character in line.chars() {
+        while let Some(character) = characters.next() {
             dbg!(&character);
             dbg!(&most_recent_lexeme);
             // TODO: Implement some peeking
-            if !separates_a_lexeme(&character) {
+            if !separates_a_lexeme(&character)
+                || peeking_reveals_compound(&character, &characters.peek())
+            {
                 most_recent_lexeme.push(character);
                 continue;
             }
