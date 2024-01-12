@@ -82,6 +82,9 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////  //
+//                                  Token Classification Helpers                                 //
+// ////////////////////////////////////////////////////////////////////////////////////////////  //
+
 #[inline]
 fn is_a_fe_type(word: &str) -> bool {
     VALID_TYPE_NAMES.contains(&word)
@@ -123,4 +126,14 @@ fn is_a_punctuation(word: &str) -> bool {
     };
 
     VALID_PUNCTUATIONS.contains(&charred_word)
+}
+
+#[inline]
+fn is_a_class_region(word: &str) -> bool {
+    VALID_CLASS_REGIONS.contains(&word)
+}
+
+#[inline]
+fn is_a_declaration_keyword(word: &str) -> bool {
+    VALID_DECLARATION_KEYWORDS.contains(&word)
 }
