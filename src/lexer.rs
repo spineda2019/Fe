@@ -31,7 +31,7 @@ fn peeking_reveals_compound(
 }
 
 /// Classify the most recent processed lexeme from the lexer as a Token
-fn classify_word(word: &str) -> Token {
+fn classify_word(word: &str) -> Result<Token, Error> {
     match word {
         scope if is_a_scope_edge(scope) => Token::new_scope_edge(scope),
         decl if is_a_declaration_keyword(decl) => Token::new_declartion_keyword(decl),
@@ -84,10 +84,10 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
             }
 
             if !most_recent_lexeme.is_empty() {
-                tokens.push(classify_word(&most_recent_lexeme));
+                tokens.push(classify_word(&most_recent_lexeme)?);
             }
             if !character.is_whitespace() {
-                tokens.push(classify_word(&character.to_string()));
+                tokens.push(classify_word(&character.to_string())?);
             }
 
             most_recent_lexeme.clear();
