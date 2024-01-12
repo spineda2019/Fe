@@ -6,6 +6,8 @@ pub enum Token {
     TypeName(String),
     Punctuation(char),
     GroupingSymbol(char),
+    DeclarationKeyword(String),
+    ClassRegion(String),
 }
 
 impl Token {
@@ -48,5 +50,13 @@ impl Token {
         };
 
         Token::GroupingSymbol(group_char)
+    }
+
+    pub fn new_class_region(class_region: &str) -> Self {
+        Token::ClassRegion(class_region.to_string())
+    }
+
+    pub fn new_declartion_keyword(declaration_keyword: &str) -> Self {
+        Token::DeclarationKeyword(declaration_keyword.to_string())
     }
 }
