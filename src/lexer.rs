@@ -1,11 +1,12 @@
 use crate::symbol_table::token::Token;
 use std::{
     fs::File,
-    io::{BufRead, BufReader},
+    io::{BufRead, BufReader, Error, ErrorKind},
 };
 
 const VALID_OPERATORS: [char; 6] = ['*', '+', '/', '-', '=', ':'];
-const VALID_GROUPING_SYMBOLS: [char; 4] = ['{', '}', '(', ')'];
+const VALID_GROUPING_SYMBOLS: [char; 2] = ['(', ')'];
+const VALID_SCOPE_SYMBOLS: [char; 2] = ['{', '}'];
 const VALID_PUNCTUATIONS: [char; 1] = [';'];
 const VALID_TYPE_NAMES: [&str; 9] = [
     "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64", "size",
@@ -21,6 +22,7 @@ fn separates_a_lexeme(character: &char) -> bool {
     VALID_OPERATORS.contains(character)
         || character.is_whitespace()
         || VALID_PUNCTUATIONS.contains(character)
+        || VALID_SCOPE_SYMBOLS.contains(character)
 }
 
 #[inline]
@@ -82,6 +84,7 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
 
         let mut most_recent_lexeme: String = String::new();
         for character in line.chars() {
+            dbg!(&character);
             if !separates_a_lexeme(&character) {
                 most_recent_lexeme.push(character);
                 continue;
@@ -94,7 +97,6 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
             }
 
             dbg!(&most_recent_lexeme);
-            dbg!(&character);
 
             if !most_recent_lexeme.is_empty() {
                 tokens.push(classify_word(&most_recent_lexeme));
@@ -105,7 +107,13 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
 
             most_recent_lexeme.clear();
         }
-        // TODO: check if lexeme has not been cleared. If so, bad syntax
+        if !most_recent_lexeme.is_empty() {
+            let error_message: &str = "Line did not end in punctuation!";
+            return Err(Error::new(
+                ErrorKind::InvalidData,
+                format!("{error_message}: {line}"),
+            ));
+        }
     }
 
     Ok(tokens)
