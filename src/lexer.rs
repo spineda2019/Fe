@@ -78,25 +78,25 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
         };
 
         let line: &str = line.trim();
-        if line.starts_with("//") {
+        if line.starts_with('#') {
             continue;
         }
 
         let mut most_recent_lexeme: String = String::new();
         for character in line.chars() {
             dbg!(&character);
+            dbg!(&most_recent_lexeme);
             if !separates_a_lexeme(&character) {
                 most_recent_lexeme.push(character);
                 continue;
             }
 
-            if most_recent_lexeme == "//" {
+            if most_recent_lexeme.starts_with('#') {
                 // Immeditately going to next line if we see a comment saves
                 // time and memory!
+                most_recent_lexeme.clear();
                 break;
             }
-
-            dbg!(&most_recent_lexeme);
 
             if !most_recent_lexeme.is_empty() {
                 tokens.push(classify_word(&most_recent_lexeme));
@@ -108,6 +108,8 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
             most_recent_lexeme.clear();
         }
         if !most_recent_lexeme.is_empty() {
+            dbg!(&most_recent_lexeme);
+            dbg!(&line);
             let error_message: &str = "Line did not end in punctuation!";
             return Err(Error::new(
                 ErrorKind::InvalidData,
