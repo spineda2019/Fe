@@ -47,6 +47,7 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
         for character in line.chars() {
             dbg!(&character);
             dbg!(&most_recent_lexeme);
+            // TODO: Implement some peeking
             if !separates_a_lexeme(&character) {
                 most_recent_lexeme.push(character);
                 continue;
