@@ -16,6 +16,8 @@ const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];
 
 fn classify_word(word: &str) -> Token {
     match word {
+        decl if is_a_declaration_keyword(decl) => Token::new_declartion_keyword(decl),
+        region if is_a_class_region(region) => Token::new_class_region(region),
         op if is_an_operator(op) => Token::new_operator(op),
         gr if is_a_grouping_symbol(gr) => Token::new_grouping_symbol(gr),
         punc if is_a_punctuation(punc) => Token::new_punctuation(punc),
