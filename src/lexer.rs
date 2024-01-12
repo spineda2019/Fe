@@ -11,49 +11,8 @@ const VALID_PUNCTUATIONS: [char; 1] = [';'];
 const VALID_TYPE_NAMES: [&str; 9] = [
     "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64", "size",
 ];
-
-#[inline]
-fn is_a_fe_type(word: &str) -> bool {
-    VALID_TYPE_NAMES.contains(&word)
-}
-
-#[inline]
-fn separates_a_lexeme(character: &char) -> bool {
-    VALID_OPERATORS.contains(character)
-        || character.is_whitespace()
-        || VALID_PUNCTUATIONS.contains(character)
-        || VALID_SCOPE_SYMBOLS.contains(character)
-}
-
-#[inline]
-fn is_a_grouping_symbol(word: &str) -> bool {
-    let charred_word: char = match word.parse::<char>() {
-        Ok(x) => x,
-        Err(_) => return false,
-    };
-
-    VALID_GROUPING_SYMBOLS.contains(&charred_word)
-}
-
-#[inline]
-fn is_an_operator(word: &str) -> bool {
-    let charred_word: char = match word.parse::<char>() {
-        Ok(x) => x,
-        Err(_) => return false,
-    };
-
-    VALID_OPERATORS.contains(&charred_word)
-}
-
-#[inline]
-fn is_a_punctuation(word: &str) -> bool {
-    let charred_word: char = match word.parse::<char>() {
-        Ok(x) => x,
-        Err(_) => return false,
-    };
-
-    VALID_PUNCTUATIONS.contains(&charred_word)
-}
+const VALID_DECLARATION_KEYWORDS: [&str; 3] = ["class", "function", "method"];
+const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];
 
 fn classify_word(word: &str) -> Token {
     match word {
@@ -107,6 +66,7 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
 
             most_recent_lexeme.clear();
         }
+
         if !most_recent_lexeme.is_empty() {
             dbg!(&most_recent_lexeme);
             dbg!(&line);
@@ -119,4 +79,48 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
     }
 
     Ok(tokens)
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////  //
+#[inline]
+fn is_a_fe_type(word: &str) -> bool {
+    VALID_TYPE_NAMES.contains(&word)
+}
+
+#[inline]
+fn separates_a_lexeme(character: &char) -> bool {
+    VALID_OPERATORS.contains(character)
+        || character.is_whitespace()
+        || VALID_PUNCTUATIONS.contains(character)
+        || VALID_SCOPE_SYMBOLS.contains(character)
+}
+
+#[inline]
+fn is_a_grouping_symbol(word: &str) -> bool {
+    let charred_word: char = match word.parse::<char>() {
+        Ok(x) => x,
+        Err(_) => return false,
+    };
+
+    VALID_GROUPING_SYMBOLS.contains(&charred_word)
+}
+
+#[inline]
+fn is_an_operator(word: &str) -> bool {
+    let charred_word: char = match word.parse::<char>() {
+        Ok(x) => x,
+        Err(_) => return false,
+    };
+
+    VALID_OPERATORS.contains(&charred_word)
+}
+
+#[inline]
+fn is_a_punctuation(word: &str) -> bool {
+    let charred_word: char = match word.parse::<char>() {
+        Ok(x) => x,
+        Err(_) => return false,
+    };
+
+    VALID_PUNCTUATIONS.contains(&charred_word)
 }
