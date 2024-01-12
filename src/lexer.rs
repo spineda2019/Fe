@@ -26,12 +26,14 @@ fn peeking_reveals_compound(
     peeked_char: &Option<&char>,
     potential_incomplete_operator: &str,
 ) -> Result<bool, Error> {
+    return Ok(false);
     todo!();
 }
 
 /// Classify the most recent processed lexeme from the lexer as a Token
 fn classify_word(word: &str) -> Token {
     match word {
+        scope if is_a_scope_edge(scope) => Token::new_scope_edge(scope),
         decl if is_a_declaration_keyword(decl) => Token::new_declartion_keyword(decl),
         region if is_a_class_region(region) => Token::new_class_region(region),
         op if is_an_operator(op) => Token::new_operator(op),
@@ -110,6 +112,16 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
 // ////////////////////////////////////////////////////////////////////////////////////////////  //
 
 #[inline]
+fn is_a_scope_edge(word: &str) -> bool {
+    let charred_word: char = match word.parse::<char>() {
+        Ok(x) => x,
+        Err(_) => return false,
+    };
+
+    VALID_SCOPE_SYMBOLS.contains(&charred_word)
+}
+
+#[inline]
 fn is_a_fe_type(word: &str) -> bool {
     VALID_TYPE_NAMES.contains(&word)
 }
@@ -120,6 +132,7 @@ fn separates_a_lexeme(character: &char) -> bool {
         || character.is_whitespace()
         || VALID_PUNCTUATIONS.contains(character)
         || VALID_SCOPE_SYMBOLS.contains(character)
+        || VALID_GROUPING_SYMBOLS.contains(character)
 }
 
 #[inline]

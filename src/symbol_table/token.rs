@@ -8,6 +8,7 @@ pub enum Token {
     GroupingSymbol(char),
     DeclarationKeyword(String),
     ClassRegion(String),
+    ScopeEdge(char),
 }
 
 impl Token {
@@ -58,5 +59,14 @@ impl Token {
 
     pub fn new_declartion_keyword(declaration_keyword: &str) -> Self {
         Token::DeclarationKeyword(declaration_keyword.to_string())
+    }
+
+    pub fn new_scope_edge(scope_edge: &str) -> Self {
+        let scope_edge_char: char = match scope_edge.parse::<char>() {
+            Ok(x) => x,
+            Err(_) => panic!("This should not happen! {scope_edge}"),
+        };
+
+        Token::ScopeEdge(scope_edge_char)
     }
 }
