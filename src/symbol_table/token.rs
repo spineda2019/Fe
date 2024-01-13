@@ -49,63 +49,23 @@ impl Token {
         Ok(Token::Identifier(identifier.to_string()))
     }
 
-    pub fn new_equal_sign(equal_sign: &str) -> Result<Self, std::io::Error> {
-        match equal_sign.parse::<char>() {
-            Ok(x) => Ok(Token::EqualSign(x)),
-            Err(_) => {
-                let error_message: String = format!("{equal_sign}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+    pub fn new_operator(operator: &str) -> Result<Self, std::io::Error> {
+        if let Ok(op) = operator.parse::<char>() {
+            match op {
+                '+' => Ok(Token::PlusSign('+')),
+                '-' => Ok(Token::MinusSign('-')),
+                '*' => Ok(Token::MultiplicationSign('*')),
+                '/' => Ok(Token::DivisionSign('/')),
+                '=' => Ok(Token::EqualSign('=')),
+                ':' => Ok(Token::Colon(':')),
+                _ => {
+                    let error_message: String = format!("Not a valid operator: {operator}");
+                    Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+                }
             }
-        }
-    }
-
-    pub fn new_plus_sign(plus_sign: &str) -> Result<Self, std::io::Error> {
-        match plus_sign.parse::<char>() {
-            Ok(x) => Ok(Token::PlusSign(x)),
-            Err(_) => {
-                let error_message: String = format!("{plus_sign}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_minus_sign(minus_sign: &str) -> Result<Self, std::io::Error> {
-        match minus_sign.parse::<char>() {
-            Ok(x) => Ok(Token::MinusSign(x)),
-            Err(_) => {
-                let error_message: String = format!("{minus_sign}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_division_sign(division_sign: &str) -> Result<Self, std::io::Error> {
-        match division_sign.parse::<char>() {
-            Ok(x) => Ok(Token::DivisionSign(x)),
-            Err(_) => {
-                let error_message: String = format!("{division_sign}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_multiplication_sign(multiplication_sign: &str) -> Result<Self, std::io::Error> {
-        match multiplication_sign.parse::<char>() {
-            Ok(x) => Ok(Token::MultiplicationSign(x)),
-            Err(_) => {
-                let error_message: String = format!("{multiplication_sign}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_colon(colon: &str) -> Result<Self, std::io::Error> {
-        match colon.parse::<char>() {
-            Ok(x) => Ok(Token::Colon(x)),
-            Err(_) => {
-                let error_message: String = format!("{colon}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
+        } else {
+            let error_message: String = format!("{operator}: Not parseable to char");
+            Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
         }
     }
 

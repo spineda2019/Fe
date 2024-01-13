@@ -37,12 +37,7 @@ fn classify_word(word: &str) -> Result<Token, Error> {
         "}" => Token::new_right_bracket("}"),
         decl if is_a_declaration_keyword(decl) => Token::new_declartion_keyword(decl),
         region if is_a_class_region(region) => Token::new_class_region(region),
-        "=" => Token::new_equal_sign("="),
-        "+" => Token::new_plus_sign("+"),
-        "-" => Token::new_minus_sign("-"),
-        "/" => Token::new_division_sign("/"),
-        "*" => Token::new_multiplication_sign("*"),
-        ":" => Token::new_colon(":"),
+        op if is_an_operator(op) => Token::new_operator(op),
         "(" => Token::new_left_parenthesis("("),
         ")" => Token::new_right_parenthesis(")"),
         punc if is_a_punctuation(punc) => Token::new_punctuation(punc),
@@ -117,6 +112,15 @@ pub fn tokenize_file(file: &File) -> Result<Vec<Token>, std::io::Error> {
 // ////////////////////////////////////////////////////////////////////////////////////////////  //
 //                                  Token Classification Helpers                                 //
 // ////////////////////////////////////////////////////////////////////////////////////////////  //
+#[inline]
+fn is_an_operator(word: &str) -> bool {
+    let charred_word: char = match word.parse::<char>() {
+        Ok(x) => x,
+        Err(_) => return false,
+    };
+
+    VALID_OPERATORS.contains(&charred_word)
+}
 
 #[inline]
 fn is_a_fe_type(word: &str) -> bool {
