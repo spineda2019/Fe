@@ -9,8 +9,8 @@ const VALID_COMPOUND_OPERATORS: [&str; 5] = ["+=", "-=", "/=", "*=", "->"];
 const VALID_GROUPING_SYMBOLS: [char; 2] = ['(', ')'];
 const VALID_SCOPE_SYMBOLS: [char; 2] = ['{', '}'];
 const VALID_PUNCTUATIONS: [char; 1] = [';'];
-const VALID_TYPE_NAMES: [&str; 9] = [
-    "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64", "size",
+const VALID_TYPE_NAMES: [&str; 10] = [
+    "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64", "usize", "ssize",
 ];
 const VALID_DECLARATION_KEYWORDS: [&str; 3] = ["class", "function", "method"];
 const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];

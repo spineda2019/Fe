@@ -2,6 +2,9 @@ use std::io::Error;
 
 #[derive(Debug)]
 pub enum Token {
+    Punctuation(char),
+    DeclarationKeyword(String),
+    ClassRegion(String),
     NumberLiteral(isize),
     Identifier(String),
     /* Operators */
@@ -14,10 +17,18 @@ pub enum Token {
     /* Grouping Symbols */
     LeftParenthesis(char),
     RightParenthesis(char),
-    TypeName(String),
-    Punctuation(char),
-    DeclarationKeyword(String),
-    ClassRegion(String),
+    /* Types */
+    UnsignedEightBitInteger(String),
+    UnsignedSixteenBitInteger(String),
+    UnsignedThirtyTwoBitInteger(String),
+    UnsignedSixtyFourBitInteger(String),
+    SignedEightBitInteger(String),
+    SignedSixteenBitInteger(String),
+    SignedThirtyTwoBitInteger(String),
+    SignedSixtyFourBitInteger(String),
+    Boolean(String),
+    UnsignedSize(String),
+    SignedSize(String),
     /* Scope Edge */
     LeftBracket(char),
     RightBracket(char),
@@ -109,7 +120,23 @@ impl Token {
     }
 
     pub fn new_type_name(type_name: &str) -> Result<Self, std::io::Error> {
-        Ok(Token::TypeName(type_name.to_string()))
+        match type_name {
+            "uint8" => Ok(Token::UnsignedEightBitInteger("uint8".to_string())),
+            "uint16" => Ok(Token::UnsignedSixteenBitInteger("uint16".to_string())),
+            "uint32" => Ok(Token::UnsignedThirtyTwoBitInteger("uint32".to_string())),
+            "uint64" => Ok(Token::UnsignedSixtyFourBitInteger("uint64".to_string())),
+            "sint8" => Ok(Token::SignedEightBitInteger("sint8".to_string())),
+            "sint16" => Ok(Token::SignedSixteenBitInteger("sint16".to_string())),
+            "sint32" => Ok(Token::SignedThirtyTwoBitInteger("sint32".to_string())),
+            "sint64" => Ok(Token::SignedSixtyFourBitInteger("sint64".to_string())),
+            "ssize" => Ok(Token::SignedSize("ssize".to_string())),
+            "usize" => Ok(Token::UnsignedSize("usize".to_string())),
+            "boolean" => Ok(Token::Boolean("boolean".to_string())),
+            _ => {
+                let error_message: String = format!("Not a valid type: {type_name}");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
+        }
     }
 
     pub fn new_left_parenthesis(left_parenthesis: &str) -> Result<Self, std::io::Error> {
