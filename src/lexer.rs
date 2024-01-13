@@ -165,9 +165,33 @@ impl<'a> Lexer<'a> {
             "(" => Ok(Token::LeftParenthesis('(')),
             ")" => Ok(Token::RightParenthesis(')')),
             punc if self.is_a_punctuation(punc) => Token::new_punctuation(punc),
-            ty if self.is_a_fe_type(ty) => Token::new_type_name(ty),
+            ty if self.is_a_fe_type(ty) => self.new_type_name(ty),
             y if y.parse::<isize>().is_ok() => Token::new_number_literal(y),
             z => Token::new_identifier(z),
+        }
+    }
+
+    fn new_type_name(&self, word: &str) -> Result<Token, Error> {
+        match (Self::VALID_TYPE_NAMES.contains(&word), word) {
+            (true, "uint8") => Ok(Token::UnsignedEightBitInteger("uint8".to_string())),
+            (true, "uint16") => Ok(Token::UnsignedSixteenBitInteger("uint16".to_string())),
+            (true, "uint32") => Ok(Token::UnsignedThirtyTwoBitInteger("uint32".to_string())),
+            (true, "uint64") => Ok(Token::UnsignedSixtyFourBitInteger("uint64".to_string())),
+            (true, "sint8") => Ok(Token::SignedEightBitInteger("sint8".to_string())),
+            (true, "sint16") => Ok(Token::SignedSixteenBitInteger("sint16".to_string())),
+            (true, "sint32") => Ok(Token::SignedThirtyTwoBitInteger("sint32".to_string())),
+            (true, "sint64") => Ok(Token::SignedSixtyFourBitInteger("sint64".to_string())),
+            (true, "ssize") => Ok(Token::SignedSize("ssize".to_string())),
+            (true, "usize") => Ok(Token::UnsignedSize("usize".to_string())),
+            (true, "boolean") => Ok(Token::Boolean("boolean".to_string())),
+            (true, _) => {
+                eprint!("Bad token -> {word}");
+                panic!("Compiler encountered something that is allowed but not yet implemented")
+            }
+            (false, _) => {
+                let error_message: String = format!("Not a valid type: {word}");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
         }
     }
 
