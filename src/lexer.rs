@@ -16,19 +16,29 @@ pub struct Lexer<'a> {
 }
 
 impl<'a> Lexer<'a> {
+    const VALID_OPERATORS: [char; 6] = ['*', '+', '/', '-', '=', ':'];
+    const VALID_COMPOUND_OPERATORS: [&'a str; 5] = ["+=", "-=", "/=", "*=", "->"];
+    const VALID_GROUPING_SYMBOLS: [char; 2] = ['(', ')'];
+    const VALID_SCOPE_SYMBOLS: [char; 2] = ['{', '}'];
+    const VALID_PUNCTUATIONS: [char; 1] = [';'];
+    const VALID_TYPE_NAMES: [&'a str; 10] = [
+        "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64", "usize",
+        "ssize",
+    ];
+    const VALID_DECLARATION_KEYWORDS: [&'a str; 5] =
+        ["class", "function", "method", "variable", "constant"];
+    const VALID_CLASS_REGIONS: [&'a str; 2] = ["public", "private"];
+
     pub fn new() -> Self {
         Lexer {
-            valid_operators: ['*', '+', '/', '-', '=', ':'],
-            valid_compound_operators: ["+=", "-=", "/=", "*=", "->"],
-            valid_grouping_symbols: ['(', ')'],
-            valid_scope_symbols: ['{', '}'],
-            valid_punctuations: [';'],
-            valid_type_names: [
-                "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64",
-                "usize", "ssize",
-            ],
-            valid_declaration_keywords: ["class", "function", "method", "variable", "constant"],
-            valid_class_regions: ["public", "private"],
+            valid_operators: Self::VALID_OPERATORS,
+            valid_compound_operators: Self::VALID_COMPOUND_OPERATORS,
+            valid_grouping_symbols: Self::VALID_GROUPING_SYMBOLS,
+            valid_scope_symbols: Self::VALID_SCOPE_SYMBOLS,
+            valid_punctuations: Self::VALID_PUNCTUATIONS,
+            valid_type_names: Self::VALID_TYPE_NAMES,
+            valid_declaration_keywords: Self::VALID_DECLARATION_KEYWORDS,
+            valid_class_regions: Self::VALID_CLASS_REGIONS,
         }
     }
 
@@ -149,7 +159,7 @@ impl<'a> Lexer<'a> {
         match word {
             "{" => Token::new_left_bracket("{"),
             "}" => Token::new_right_bracket("}"),
-            decl if self.is_a_declaration_keyword(decl) => Token::new_declartion_keyword(decl),
+            decl if self.is_a_declaration_keyword(decl) => self.new_declaration_keyword(decl),
             region if self.is_a_class_region(region) => Token::new_class_region(region),
             op if self.is_an_operator(op) => Token::new_operator(op),
             "(" => Token::new_left_parenthesis("("),
@@ -158,6 +168,24 @@ impl<'a> Lexer<'a> {
             ty if self.is_a_fe_type(ty) => Token::new_type_name(ty),
             y if y.parse::<isize>().is_ok() => Token::new_number_literal(y),
             z => Token::new_identifier(z),
+        }
+    }
+
+    fn new_declaration_keyword(&self, word: &str) -> Result<Token, Error> {
+        match (Self::VALID_DECLARATION_KEYWORDS.contains(&word), word) {
+            (true, "class") => Ok(Token::ClassDeclaration("class".to_string())),
+            (true, "method") => Ok(Token::MethodDeclaration("method".to_string())),
+            (true, "function") => Ok(Token::FunctionDeclaration("function".to_string())),
+            (true, "constant") => Ok(Token::ConstantDeclaration("constant".to_string())),
+            (true, "variable") => Ok(Token::VariableDeclaration("variable".to_string())),
+            (true, _) => {
+                eprint!("Bad token -> {word}");
+                panic!("The compiler encountered a type that is allowed but not yet implemented")
+            }
+            (false, _) => {
+                let error_message: String = format!("Not a valid keyword!: {word}");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
         }
     }
 }

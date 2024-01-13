@@ -134,20 +134,6 @@ impl Token {
         }
     }
 
-    pub fn new_declartion_keyword(declaration_keyword: &str) -> Result<Self, std::io::Error> {
-        match declaration_keyword {
-            "class" => Ok(Token::ClassDeclaration("class".to_string())),
-            "function" => Ok(Token::FunctionDeclaration("function".to_string())),
-            "method" => Ok(Token::MethodDeclaration("method".to_string())),
-            "constant" => Ok(Token::ConstantDeclaration("constant".to_string())),
-            "variable" => Ok(Token::VariableDeclaration("variable".to_string())),
-            _ => {
-                let error_message: String = format!("{declaration_keyword}: Bad Declaration");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
     pub fn new_left_bracket(left_bracket: &str) -> Result<Self, std::io::Error> {
         match left_bracket.parse::<char>() {
             Ok(x) => Ok(Token::LeftBracket(x)),
