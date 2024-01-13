@@ -1,4 +1,4 @@
-use crate::symbol_table::token::Token;
+use crate::token::Token;
 use std::{
     fs::File,
     io::{BufRead, BufReader, Error, ErrorKind},
@@ -12,7 +12,8 @@ const VALID_PUNCTUATIONS: [char; 1] = [';'];
 const VALID_TYPE_NAMES: [&str; 10] = [
     "sint8", "uint8", "sint16", "uint16", "sint32", "uint32", "sint64", "uint64", "usize", "ssize",
 ];
-const VALID_DECLARATION_KEYWORDS: [&str; 3] = ["class", "function", "method"];
+const VALID_DECLARATION_KEYWORDS: [&str; 5] =
+    ["class", "function", "method", "variable", "constant"];
 const VALID_CLASS_REGIONS: [&str; 2] = ["public", "private"];
 
 /// Check if the current character encountered is part of a compound operator
