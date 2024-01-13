@@ -4,18 +4,23 @@ use std::io::Error;
 pub enum Token {
     NumberLiteral(isize),
     Identifier(String),
+    /* Operators */
     PlusSign(char),
     MinusSign(char),
     MultiplicationSign(char),
     DivisionSign(char),
     EqualSign(char),
     Colon(char),
+    /* Grouping Symbols */
+    LeftParenthesis(char),
+    RightParenthesis(char),
     TypeName(String),
     Punctuation(char),
-    GroupingSymbol(char),
     DeclarationKeyword(String),
     ClassRegion(String),
-    ScopeEdge(char),
+    /* Scope Edge */
+    LeftBracket(char),
+    RightBracket(char),
 }
 
 impl Token {
@@ -107,11 +112,21 @@ impl Token {
         Ok(Token::TypeName(type_name.to_string()))
     }
 
-    pub fn new_grouping_symbol(grouping_symbol: &str) -> Result<Self, std::io::Error> {
-        match grouping_symbol.parse::<char>() {
-            Ok(x) => Ok(Token::GroupingSymbol(x)),
+    pub fn new_left_parenthesis(left_parenthesis: &str) -> Result<Self, std::io::Error> {
+        match left_parenthesis.parse::<char>() {
+            Ok(x) => Ok(Token::LeftParenthesis(x)),
             Err(_) => {
-                let error_message: String = format!("{grouping_symbol}: Not parseable to char");
+                let error_message: String = format!("{left_parenthesis}: Not parseable to char");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
+        }
+    }
+
+    pub fn new_right_parenthesis(right_parenthesis: &str) -> Result<Self, std::io::Error> {
+        match right_parenthesis.parse::<char>() {
+            Ok(x) => Ok(Token::RightParenthesis(x)),
+            Err(_) => {
+                let error_message: String = format!("{right_parenthesis}: Not parseable to char");
                 Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
             }
         }
@@ -125,11 +140,21 @@ impl Token {
         Ok(Token::DeclarationKeyword(declaration_keyword.to_string()))
     }
 
-    pub fn new_scope_edge(scope_edge: &str) -> Result<Self, std::io::Error> {
-        match scope_edge.parse::<char>() {
-            Ok(x) => Ok(Token::ScopeEdge(x)),
+    pub fn new_left_bracket(left_bracket: &str) -> Result<Self, std::io::Error> {
+        match left_bracket.parse::<char>() {
+            Ok(x) => Ok(Token::LeftBracket(x)),
             Err(_) => {
-                let error_message: String = format!("{scope_edge}: Not parseable to char");
+                let error_message: String = format!("{left_bracket}: Not parseable to char");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
+        }
+    }
+
+    pub fn new_right_bracket(right_bracket: &str) -> Result<Self, std::io::Error> {
+        match right_bracket.parse::<char>() {
+            Ok(x) => Ok(Token::RightBracket(x)),
+            Err(_) => {
+                let error_message: String = format!("{right_bracket}: Not parseable to char");
                 Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
             }
         }
