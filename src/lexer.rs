@@ -157,17 +157,56 @@ impl<'a> Lexer<'a> {
     /// Classify the most recent processed lexeme from the lexer as a Token
     fn classify_word(&self, word: &str) -> Result<Token, Error> {
         match word {
-            "{" => Token::new_left_bracket("{"),
-            "}" => Token::new_right_bracket("}"),
+            "{" => Ok(Token::LeftBracket('{')),
+            "}" => Ok(Token::RightBracket('}')),
             decl if self.is_a_declaration_keyword(decl) => self.new_declaration_keyword(decl),
-            region if self.is_a_class_region(region) => Token::new_class_region(region),
-            op if self.is_an_operator(op) => Token::new_operator(op),
-            "(" => Token::new_left_parenthesis("("),
-            ")" => Token::new_right_parenthesis(")"),
+            region if self.is_a_class_region(region) => self.new_class_region(region),
+            op if self.is_an_operator(op) => self.new_operator(op),
+            "(" => Ok(Token::LeftParenthesis('(')),
+            ")" => Ok(Token::RightParenthesis(')')),
             punc if self.is_a_punctuation(punc) => Token::new_punctuation(punc),
             ty if self.is_a_fe_type(ty) => Token::new_type_name(ty),
             y if y.parse::<isize>().is_ok() => Token::new_number_literal(y),
             z => Token::new_identifier(z),
+        }
+    }
+
+    fn new_operator(&self, word: &str) -> Result<Token, Error> {
+        if let Ok(op) = word.parse::<char>() {
+            match (Self::VALID_OPERATORS.contains(&op), op) {
+                (true, '+') => Ok(Token::PlusSign('+')),
+                (true, '-') => Ok(Token::MinusSign('-')),
+                (true, '*') => Ok(Token::MultiplicationSign('*')),
+                (true, '/') => Ok(Token::DivisionSign('/')),
+                (true, '=') => Ok(Token::EqualSign('=')),
+                (true, ':') => Ok(Token::Colon(':')),
+                (true, _) => {
+                    eprint!("Bad token -> {word}");
+                    panic!("Compiler encountered something that is allowed but not yet implemented")
+                }
+                (false, _) => {
+                    let error_message: String = format!("Not a valid keyword!: {word}");
+                    Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+                }
+            }
+        } else {
+            let error_message: String = format!("{word}: Not parseable to char");
+            Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+        }
+    }
+
+    fn new_class_region(&self, word: &str) -> Result<Token, Error> {
+        match (Self::VALID_CLASS_REGIONS.contains(&word), word) {
+            (true, "public") => Ok(Token::PublicClassRegion("public".to_string())),
+            (true, "private") => Ok(Token::PrivateClassRegion("private".to_string())),
+            (true, _) => {
+                eprint!("Bad token -> {word}");
+                panic!("Compiler encountered something that is allowed but not yet implemented")
+            }
+            (false, _) => {
+                let error_message: String = format!("Not a valid keyword!: {word}");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
         }
     }
 

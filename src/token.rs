@@ -56,26 +56,6 @@ impl Token {
         Ok(Token::Identifier(identifier.to_string()))
     }
 
-    pub fn new_operator(operator: &str) -> Result<Self, std::io::Error> {
-        if let Ok(op) = operator.parse::<char>() {
-            match op {
-                '+' => Ok(Token::PlusSign('+')),
-                '-' => Ok(Token::MinusSign('-')),
-                '*' => Ok(Token::MultiplicationSign('*')),
-                '/' => Ok(Token::DivisionSign('/')),
-                '=' => Ok(Token::EqualSign('=')),
-                ':' => Ok(Token::Colon(':')),
-                _ => {
-                    let error_message: String = format!("Not a valid operator: {operator}");
-                    Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-                }
-            }
-        } else {
-            let error_message: String = format!("{operator}: Not parseable to char");
-            Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-        }
-    }
-
     pub fn new_punctuation(punctuation: &str) -> Result<Self, std::io::Error> {
         match punctuation.parse::<char>() {
             Ok(x) => Ok(Token::Punctuation(x)),
@@ -101,54 +81,6 @@ impl Token {
             "boolean" => Ok(Token::Boolean("boolean".to_string())),
             _ => {
                 let error_message: String = format!("Not a valid type: {type_name}");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_left_parenthesis(left_parenthesis: &str) -> Result<Self, std::io::Error> {
-        match left_parenthesis.parse::<char>() {
-            Ok(x) => Ok(Token::LeftParenthesis(x)),
-            Err(_) => {
-                let error_message: String = format!("{left_parenthesis}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_right_parenthesis(right_parenthesis: &str) -> Result<Self, std::io::Error> {
-        match right_parenthesis.parse::<char>() {
-            Ok(x) => Ok(Token::RightParenthesis(x)),
-            Err(_) => {
-                let error_message: String = format!("{right_parenthesis}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_class_region(class_region: &str) -> Result<Self, std::io::Error> {
-        match class_region {
-            "public" => Ok(Token::PublicClassRegion("public".to_string())),
-            "private" => Ok(Token::PrivateClassRegion("private".to_string())),
-            _ => todo!(),
-        }
-    }
-
-    pub fn new_left_bracket(left_bracket: &str) -> Result<Self, std::io::Error> {
-        match left_bracket.parse::<char>() {
-            Ok(x) => Ok(Token::LeftBracket(x)),
-            Err(_) => {
-                let error_message: String = format!("{left_bracket}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-
-    pub fn new_right_bracket(right_bracket: &str) -> Result<Self, std::io::Error> {
-        match right_bracket.parse::<char>() {
-            Ok(x) => Ok(Token::RightBracket(x)),
-            Err(_) => {
-                let error_message: String = format!("{right_bracket}: Not parseable to char");
                 Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
             }
         }
