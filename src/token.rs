@@ -3,9 +3,11 @@ use std::io::Error;
 #[derive(Debug)]
 pub enum Token {
     Punctuation(char),
-    ClassRegion(String),
     NumberLiteral(isize),
     Identifier(String),
+    /* */
+    PublicClassRegion(String),
+    PrivateClassRegion(String),
     /* Declarations */
     ClassDeclaration(String),
     FunctionDeclaration(String),
@@ -125,7 +127,11 @@ impl Token {
     }
 
     pub fn new_class_region(class_region: &str) -> Result<Self, std::io::Error> {
-        Ok(Token::ClassRegion(class_region.to_string()))
+        match class_region {
+            "public" => Ok(Token::PublicClassRegion("public".to_string())),
+            "private" => Ok(Token::PrivateClassRegion("private".to_string())),
+            _ => todo!(),
+        }
     }
 
     pub fn new_declartion_keyword(declaration_keyword: &str) -> Result<Self, std::io::Error> {

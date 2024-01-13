@@ -1,5 +1,6 @@
 mod lexer;
 mod token;
+use lexer::Lexer;
 use std::io::ErrorKind;
 use token::Token;
 
@@ -14,13 +15,14 @@ fn main() -> Result<(), std::io::Error> {
     }
 
     let source_file: &str = &args[1];
+    let lexer: Lexer = Lexer::new();
     println!("Compiling {source_file}!");
     // TODO: lex whitespace delimited words
     // TODO: Classify as tokens
     // TODO: load in to table
     // TODO: Parse Tree?
     let file: std::fs::File = std::fs::File::open(source_file)?;
-    let tokens: Vec<Token> = lexer::tokenize_file(&file)?;
+    let tokens: Vec<Token> = lexer.tokenize_file(&file)?;
 
     dbg!(&tokens);
     Ok(())
