@@ -1,7 +1,7 @@
 mod lexer;
-mod symbol_table;
+mod token;
 use std::io::ErrorKind;
-use symbol_table::token::Token;
+use token::Token;
 
 fn main() -> Result<(), std::io::Error> {
     println!("Hello, Compiler!");
