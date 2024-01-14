@@ -42,6 +42,44 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    /// Check if the current character encountered is part of a compound operator
+    /// # Arguments
+    /// * `current_char` - The current character being processed by the lexer.
+    /// * `peeked_char` - the character immediately after current_char in the file. Not consumed.
+    /// * `potential_incomplete_operator` - The most recent built up lexeme from the lexer. If the
+    /// current character doesn't make syntactic sense with this, we will return an error
+    fn peeking_reveals_compound(
+        &self,
+        current_char: &char,
+        peeked_char: &Option<&char>,
+        potential_incomplete_operator: &str,
+    ) -> bool {
+        // want to return true if look left OR right shows that the current_char is part of an
+        // operator
+        if !self.is_an_operator(&current_char.to_string()) || current_char.is_whitespace() {
+            return false;
+        }
+
+        if let Some(next_char) = peeked_char {
+            if self.is_an_operator(&next_char.to_string()) {
+                return true;
+            }
+
+            let mut combined_operator: String = potential_incomplete_operator.to_string();
+            combined_operator.push(*current_char);
+
+            println!("checking: {combined_operator}");
+
+            for operator in Self::VALID_COMPOUND_OPERATORS {
+                if operator.starts_with(combined_operator.trim()) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
     /// This lexes the input file, and is "the lexer"
     pub fn tokenize_file(&self, file: &File) -> Result<Vec<Token>, std::io::Error> {
         let reader: BufReader<&File> = BufReader::new(file);
@@ -65,13 +103,12 @@ impl<'a> Lexer<'a> {
             while let Some(character) = characters.next() {
                 dbg!(&character);
                 dbg!(&most_recent_lexeme);
-                // TODO: Implement some peeking
                 if !self.separates_a_lexeme(&character)
-                    || peeking_reveals_compound(
+                    || self.peeking_reveals_compound(
                         &character,
                         &characters.peek(),
                         &most_recent_lexeme,
-                    )?
+                    )
                 {
                     most_recent_lexeme.push(character);
                     continue;
@@ -111,6 +148,11 @@ impl<'a> Lexer<'a> {
     // ////////////////////////////////////////////////////////////////////////////////////////  //
     //                                Token Classification Helpers                               //
     // ////////////////////////////////////////////////////////////////////////////////////////  //
+    #[inline]
+    fn is_a_compound_operator(&self, word: &str) -> bool {
+        Self::VALID_COMPOUND_OPERATORS.contains(&word)
+    }
+
     #[inline]
     fn is_an_operator(&self, word: &str) -> bool {
         let charred_word: char = match word.parse::<char>() {
@@ -159,6 +201,7 @@ impl<'a> Lexer<'a> {
         match word {
             "{" => Ok(Token::LeftBracket('{')),
             "}" => Ok(Token::RightBracket('}')),
+            comp if self.is_a_compound_operator(comp) => self.new_compound_operator(comp),
             decl if self.is_a_declaration_keyword(decl) => self.new_declaration_keyword(decl),
             region if self.is_a_class_region(region) => self.new_class_region(region),
             op if self.is_an_operator(op) => self.new_operator(op),
@@ -172,6 +215,19 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn new_compound_operator(&self, word: &str) -> Result<Token, Error> {
+        match (Self::VALID_COMPOUND_OPERATORS.contains(&word), word) {
+            (true, _) => {
+                eprintln!("Bad token -> {word} when creating compound operator");
+                panic!("Compiler encountered something allowed but not yet implemented")
+            }
+
+            (false, _) => {
+                let error_message: String = format!("Not a valid compound operator: {word}");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
+        }
+    }
     fn new_float_literal(&self, float_literal: &str) -> Result<Token, Error> {
         match float_literal.parse::<f64>() {
             Ok(x) => Ok(Token::FloatLiteral(x)),
@@ -293,19 +349,4 @@ impl<'a> Lexer<'a> {
             }
         }
     }
-}
-
-/// Check if the current character encountered is part of a compound operator
-/// # Arguments
-/// * `current_char` - The current character being processed by the lexer.
-/// * `peeked_char` - the character immediately after current_char in the file. Not consumed.
-/// * `potential_incomplete_operator` - The most recent built up lexeme from the lexer. If the
-/// current character doesn't make syntactic sense with this, we will return an error
-fn peeking_reveals_compound(
-    current_char: &char,
-    peeked_char: &Option<&char>,
-    potential_incomplete_operator: &str,
-) -> Result<bool, Error> {
-    return Ok(false);
-    todo!();
 }
