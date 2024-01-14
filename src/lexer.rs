@@ -5,7 +5,7 @@ use std::{
 };
 
 pub struct Lexer<'a> {
-    valid_operators: [char; 6],
+    valid_operators: [char; 8],
     valid_compound_operators: [&'a str; 5],
     valid_grouping_symbols: [char; 2],
     valid_scope_symbols: [char; 2],
@@ -16,7 +16,7 @@ pub struct Lexer<'a> {
 }
 
 impl<'a> Lexer<'a> {
-    const VALID_OPERATORS: [char; 6] = ['*', '+', '/', '-', '=', ':'];
+    const VALID_OPERATORS: [char; 8] = ['*', '+', '/', '-', '=', ':', '>', '<'];
     const VALID_COMPOUND_OPERATORS: [&'a str; 5] = ["+=", "-=", "/=", "*=", "->"];
     const VALID_GROUPING_SYMBOLS: [char; 2] = ['(', ')'];
     const VALID_SCOPE_SYMBOLS: [char; 2] = ['{', '}'];
@@ -197,7 +197,7 @@ impl<'a> Lexer<'a> {
             match (Self::VALID_PUNCTUATIONS.contains(&punc), punc) {
                 (true, ';') => Ok(Token::Punctuation(';')),
                 (true, _) => {
-                    eprint!("Bad token -> {word}");
+                    eprintln!("Bad token -> {word} when creating punctuation");
                     panic!("Compiler encountered something allowed but not yet implemented")
                 }
                 (false, _) => {
@@ -225,7 +225,7 @@ impl<'a> Lexer<'a> {
             (true, "usize") => Ok(Token::UnsignedSize("usize".to_string())),
             (true, "boolean") => Ok(Token::Boolean("boolean".to_string())),
             (true, _) => {
-                eprint!("Bad token -> {word}");
+                eprintln!("Bad token -> {word} when creating type name");
                 panic!("Compiler encountered something that is allowed but not yet implemented")
             }
             (false, _) => {
@@ -244,8 +244,10 @@ impl<'a> Lexer<'a> {
                 (true, '/') => Ok(Token::DivisionSign('/')),
                 (true, '=') => Ok(Token::EqualSign('=')),
                 (true, ':') => Ok(Token::Colon(':')),
+                (true, '>') => Ok(Token::GreaterThan('>')),
+                (true, '<') => Ok(Token::LessThan('<')),
                 (true, _) => {
-                    eprint!("Bad token -> {word}");
+                    eprintln!("Bad token -> {word} when creating operator");
                     panic!("Compiler encountered something allowed but not yet implemented")
                 }
                 (false, _) => {
@@ -264,7 +266,7 @@ impl<'a> Lexer<'a> {
             (true, "public") => Ok(Token::PublicClassRegion("public".to_string())),
             (true, "private") => Ok(Token::PrivateClassRegion("private".to_string())),
             (true, _) => {
-                eprint!("Bad token -> {word}");
+                eprintln!("Bad token -> {word} when creating class region");
                 panic!("Compiler encountered something that is allowed but not yet implemented")
             }
             (false, _) => {
@@ -282,7 +284,7 @@ impl<'a> Lexer<'a> {
             (true, "constant") => Ok(Token::ConstantDeclaration("constant".to_string())),
             (true, "variable") => Ok(Token::VariableDeclaration("variable".to_string())),
             (true, _) => {
-                eprint!("Bad token -> {word}");
+                eprintln!("Bad token -> {word} when creating declaration keyword");
                 panic!("The compiler encountered a type that is allowed but not yet implemented")
             }
             (false, _) => {

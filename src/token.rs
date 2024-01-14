@@ -21,6 +21,8 @@ pub enum Token {
     DivisionSign(char),
     EqualSign(char),
     Colon(char),
+    GreaterThan(char),
+    LessThan(char),
     /* Grouping Symbols */
     LeftParenthesis(char),
     RightParenthesis(char),
