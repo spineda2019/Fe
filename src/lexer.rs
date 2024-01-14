@@ -166,8 +166,18 @@ impl<'a> Lexer<'a> {
             ")" => Ok(Token::RightParenthesis(')')),
             punc if self.is_a_punctuation(punc) => self.new_punctuation(punc),
             ty if self.is_a_fe_type(ty) => self.new_type_name(ty),
-            y if y.parse::<isize>().is_ok() => Token::new_number_literal(y),
+            y if y.parse::<isize>().is_ok() => self.new_number_literal(y),
             other => Ok(Token::Identifier(other.to_string())),
+        }
+    }
+
+    fn new_number_literal(&self, number_literal: &str) -> Result<Token, Error> {
+        match number_literal.parse::<isize>() {
+            Ok(x) => Ok(Token::NumberLiteral(x)),
+            Err(_) => {
+                let error_message: String = format!("{number_literal}: Not parseable to isize");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
         }
     }
 

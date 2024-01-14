@@ -40,15 +40,3 @@ pub enum Token {
     LeftBracket(char),
     RightBracket(char),
 }
-
-impl Token {
-    pub fn new_number_literal(number_literal: &str) -> Result<Self, std::io::Error> {
-        match number_literal.parse::<isize>() {
-            Ok(x) => Ok(Token::NumberLiteral(x)),
-            Err(_) => {
-                let error_message: String = format!("{number_literal}: Not parseable to isize");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
-}
