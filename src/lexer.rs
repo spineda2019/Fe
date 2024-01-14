@@ -217,11 +217,15 @@ impl<'a> Lexer<'a> {
 
     fn new_compound_operator(&self, word: &str) -> Result<Token, Error> {
         match (Self::VALID_COMPOUND_OPERATORS.contains(&word), word) {
+            (true, "+=") => Ok(Token::IncrementAndAssign("+=".to_string())),
+            (true, "-=") => Ok(Token::DecrementAndAssign("-=".to_string())),
+            (true, "*=") => Ok(Token::MultiplyAndAssign("*=".to_string())),
+            (true, "/=") => Ok(Token::DivideAndAssign("/=".to_string())),
+            (true, "->") => Ok(Token::ReturnTypeArrow("->".to_string())),
             (true, _) => {
                 eprintln!("Bad token -> {word} when creating compound operator");
                 panic!("Compiler encountered something allowed but not yet implemented")
             }
-
             (false, _) => {
                 let error_message: String = format!("Not a valid compound operator: {word}");
                 Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
