@@ -1,9 +1,9 @@
-use std::io::Error;
-
 #[derive(Debug)]
 pub enum Token {
+    /* Numeric Literals */
+    IntegerLiteral(isize),
+    FloatLiteral(f64),
     Punctuation(char),
-    NumberLiteral(isize),
     Identifier(String),
     /* */
     PublicClassRegion(String),

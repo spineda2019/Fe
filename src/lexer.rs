@@ -166,16 +166,27 @@ impl<'a> Lexer<'a> {
             ")" => Ok(Token::RightParenthesis(')')),
             punc if self.is_a_punctuation(punc) => self.new_punctuation(punc),
             ty if self.is_a_fe_type(ty) => self.new_type_name(ty),
-            y if y.parse::<isize>().is_ok() => self.new_number_literal(y),
+            f if f.parse::<f64>().is_ok() => self.new_float_literal(f),
+            y if y.parse::<isize>().is_ok() => self.new_integer_literal(y),
             other => Ok(Token::Identifier(other.to_string())),
         }
     }
 
-    fn new_number_literal(&self, number_literal: &str) -> Result<Token, Error> {
-        match number_literal.parse::<isize>() {
-            Ok(x) => Ok(Token::NumberLiteral(x)),
+    fn new_float_literal(&self, float_literal: &str) -> Result<Token, Error> {
+        match float_literal.parse::<f64>() {
+            Ok(x) => Ok(Token::FloatLiteral(x)),
             Err(_) => {
-                let error_message: String = format!("{number_literal}: Not parseable to isize");
+                let error_message: String = format!("{float_literal}: Not parseable to isize");
+                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+            }
+        }
+    }
+
+    fn new_integer_literal(&self, integer_literal: &str) -> Result<Token, Error> {
+        match integer_literal.parse::<isize>() {
+            Ok(x) => Ok(Token::IntegerLiteral(x)),
+            Err(_) => {
+                let error_message: String = format!("{integer_literal}: Not parseable to isize");
                 Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
             }
         }
