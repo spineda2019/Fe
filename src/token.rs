@@ -51,18 +51,4 @@ impl Token {
             }
         }
     }
-
-    pub fn new_identifier(identifier: &str) -> Result<Self, std::io::Error> {
-        Ok(Token::Identifier(identifier.to_string()))
-    }
-
-    pub fn new_punctuation(punctuation: &str) -> Result<Self, std::io::Error> {
-        match punctuation.parse::<char>() {
-            Ok(x) => Ok(Token::Punctuation(x)),
-            Err(_) => {
-                let error_message: String = format!("{punctuation}: Not parseable to char");
-                Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
-            }
-        }
-    }
 }

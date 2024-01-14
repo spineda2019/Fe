@@ -164,10 +164,29 @@ impl<'a> Lexer<'a> {
             op if self.is_an_operator(op) => self.new_operator(op),
             "(" => Ok(Token::LeftParenthesis('(')),
             ")" => Ok(Token::RightParenthesis(')')),
-            punc if self.is_a_punctuation(punc) => Token::new_punctuation(punc),
+            punc if self.is_a_punctuation(punc) => self.new_punctuation(punc),
             ty if self.is_a_fe_type(ty) => self.new_type_name(ty),
             y if y.parse::<isize>().is_ok() => Token::new_number_literal(y),
-            z => Token::new_identifier(z),
+            other => Ok(Token::Identifier(other.to_string())),
+        }
+    }
+
+    fn new_punctuation(&self, word: &str) -> Result<Token, Error> {
+        if let Ok(punc) = word.parse::<char>() {
+            match (Self::VALID_PUNCTUATIONS.contains(&punc), punc) {
+                (true, ';') => Ok(Token::Punctuation(';')),
+                (true, _) => {
+                    eprint!("Bad token -> {word}");
+                    panic!("Compiler encountered something allowed but not yet implemented")
+                }
+                (false, _) => {
+                    let error_message: String = format!("Not a valid punctuation: {word}");
+                    Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
+                }
+            }
+        } else {
+            let error_message: String = format!("{word}: Not parseable to char");
+            Err(Error::new(std::io::ErrorKind::Interrupted, error_message))
         }
     }
 
@@ -206,7 +225,7 @@ impl<'a> Lexer<'a> {
                 (true, ':') => Ok(Token::Colon(':')),
                 (true, _) => {
                     eprint!("Bad token -> {word}");
-                    panic!("Compiler encountered something that is allowed but not yet implemented")
+                    panic!("Compiler encountered something allowed but not yet implemented")
                 }
                 (false, _) => {
                     let error_message: String = format!("Not a valid keyword!: {word}");
