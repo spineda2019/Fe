@@ -80,6 +80,61 @@ impl<'a> Lexer<'a> {
         false
     }
 
+    pub fn tokenize_line(&self, line: &str) -> Result<Vec<Token>, std::io::Error> {
+        let mut tokens: Vec<Token> = Vec::new();
+
+        let line: &str = line.trim();
+        if line.starts_with('#') {
+            return Ok(tokens);
+        }
+
+        let mut characters = line.chars().peekable();
+
+        let mut most_recent_lexeme: String = String::new();
+        while let Some(character) = characters.next() {
+            dbg!(&character);
+            dbg!(&most_recent_lexeme);
+            if !self.separates_a_lexeme(&character)
+                || self.peeking_reveals_compound(
+                    &character,
+                    &characters.peek(),
+                    &most_recent_lexeme,
+                )
+            {
+                most_recent_lexeme.push(character);
+                continue;
+            }
+
+            if most_recent_lexeme.starts_with('#') {
+                // Immeditately going to next line if we see a comment saves
+                // time and memory!
+                most_recent_lexeme.clear();
+                break;
+            }
+
+            if !most_recent_lexeme.is_empty() {
+                tokens.push(self.classify_word(&most_recent_lexeme)?);
+            }
+            if !character.is_whitespace() {
+                tokens.push(self.classify_word(&character.to_string())?);
+            }
+
+            most_recent_lexeme.clear();
+        }
+
+        if !most_recent_lexeme.is_empty() {
+            dbg!(&most_recent_lexeme);
+            dbg!(&line);
+            let error_message: &str = "Line did not end in punctuation!";
+            return Err(Error::new(
+                ErrorKind::InvalidData,
+                format!("{error_message}: {line}"),
+            ));
+        }
+
+        Ok(tokens)
+    }
+
     /// This lexes the input file, and is "the lexer"
     pub fn tokenize_file(&self, file: &File) -> Result<Vec<Token>, std::io::Error> {
         let reader: BufReader<&File> = BufReader::new(file);
@@ -88,58 +143,12 @@ impl<'a> Lexer<'a> {
 
         for line in file_lines {
             let line = match line {
-                Ok(x) => x,
+                Ok(x) => x.trim().to_string(),
                 Err(y) => return Err(y),
             };
 
-            let line: &str = line.trim();
-            if line.starts_with('#') {
-                continue;
-            }
-
-            let mut characters = line.chars().peekable();
-
-            let mut most_recent_lexeme: String = String::new();
-            while let Some(character) = characters.next() {
-                dbg!(&character);
-                dbg!(&most_recent_lexeme);
-                if !self.separates_a_lexeme(&character)
-                    || self.peeking_reveals_compound(
-                        &character,
-                        &characters.peek(),
-                        &most_recent_lexeme,
-                    )
-                {
-                    most_recent_lexeme.push(character);
-                    continue;
-                }
-
-                if most_recent_lexeme.starts_with('#') {
-                    // Immeditately going to next line if we see a comment saves
-                    // time and memory!
-                    most_recent_lexeme.clear();
-                    break;
-                }
-
-                if !most_recent_lexeme.is_empty() {
-                    tokens.push(self.classify_word(&most_recent_lexeme)?);
-                }
-                if !character.is_whitespace() {
-                    tokens.push(self.classify_word(&character.to_string())?);
-                }
-
-                most_recent_lexeme.clear();
-            }
-
-            if !most_recent_lexeme.is_empty() {
-                dbg!(&most_recent_lexeme);
-                dbg!(&line);
-                let error_message: &str = "Line did not end in punctuation!";
-                return Err(Error::new(
-                    ErrorKind::InvalidData,
-                    format!("{error_message}: {line}"),
-                ));
-            }
+            let mut lines_tokens = self.tokenize_line(&line)?;
+            tokens.append(&mut lines_tokens);
         }
 
         Ok(tokens)
