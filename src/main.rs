@@ -1,5 +1,6 @@
 mod interactive_cli;
 mod lexer;
+mod parser;
 mod token;
 
 use lexer::Lexer;
