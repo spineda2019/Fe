@@ -80,6 +80,7 @@ impl<'a> Lexer<'a> {
         false
     }
 
+    #[inline]
     pub fn tokenize_line(&self, line: &str) -> Result<Vec<Token>, std::io::Error> {
         let mut tokens: Vec<Token> = Vec::new();
 
