@@ -217,11 +217,11 @@ impl<'a> Lexer<'a> {
 
     fn new_compound_operator(&self, word: &str) -> Result<Token, Error> {
         match (Self::VALID_COMPOUND_OPERATORS.contains(&word), word) {
-            (true, "+=") => Ok(Token::IncrementAndAssign("+=".to_string())),
-            (true, "-=") => Ok(Token::DecrementAndAssign("-=".to_string())),
-            (true, "*=") => Ok(Token::MultiplyAndAssign("*=".to_string())),
-            (true, "/=") => Ok(Token::DivideAndAssign("/=".to_string())),
-            (true, "->") => Ok(Token::ReturnTypeArrow("->".to_string())),
+            (true, "+=") => Ok(Token::IncrementAndAssign("+=")),
+            (true, "-=") => Ok(Token::DecrementAndAssign("-=")),
+            (true, "*=") => Ok(Token::MultiplyAndAssign("*=")),
+            (true, "/=") => Ok(Token::DivideAndAssign("/=")),
+            (true, "->") => Ok(Token::ReturnTypeArrow("->")),
             (true, _) => {
                 eprintln!("Bad token -> {word} when creating compound operator");
                 panic!("Compiler encountered something allowed but not yet implemented")
@@ -273,17 +273,17 @@ impl<'a> Lexer<'a> {
 
     fn new_type_name(&self, word: &str) -> Result<Token, Error> {
         match (Self::VALID_TYPE_NAMES.contains(&word), word) {
-            (true, "uint8") => Ok(Token::UnsignedEightBitInteger("uint8".to_string())),
-            (true, "uint16") => Ok(Token::UnsignedSixteenBitInteger("uint16".to_string())),
-            (true, "uint32") => Ok(Token::UnsignedThirtyTwoBitInteger("uint32".to_string())),
-            (true, "uint64") => Ok(Token::UnsignedSixtyFourBitInteger("uint64".to_string())),
-            (true, "sint8") => Ok(Token::SignedEightBitInteger("sint8".to_string())),
-            (true, "sint16") => Ok(Token::SignedSixteenBitInteger("sint16".to_string())),
-            (true, "sint32") => Ok(Token::SignedThirtyTwoBitInteger("sint32".to_string())),
-            (true, "sint64") => Ok(Token::SignedSixtyFourBitInteger("sint64".to_string())),
-            (true, "ssize") => Ok(Token::SignedSize("ssize".to_string())),
-            (true, "usize") => Ok(Token::UnsignedSize("usize".to_string())),
-            (true, "boolean") => Ok(Token::Boolean("boolean".to_string())),
+            (true, "uint8") => Ok(Token::UnsignedEightBitInteger("uint8")),
+            (true, "uint16") => Ok(Token::UnsignedSixteenBitInteger("uint16")),
+            (true, "uint32") => Ok(Token::UnsignedThirtyTwoBitInteger("uint32")),
+            (true, "uint64") => Ok(Token::UnsignedSixtyFourBitInteger("uint64")),
+            (true, "sint8") => Ok(Token::SignedEightBitInteger("sint8")),
+            (true, "sint16") => Ok(Token::SignedSixteenBitInteger("sint16")),
+            (true, "sint32") => Ok(Token::SignedThirtyTwoBitInteger("sint32")),
+            (true, "sint64") => Ok(Token::SignedSixtyFourBitInteger("sint64")),
+            (true, "ssize") => Ok(Token::SignedSize("ssize")),
+            (true, "usize") => Ok(Token::UnsignedSize("usize")),
+            (true, "boolean") => Ok(Token::Boolean("boolean")),
             (true, _) => {
                 eprintln!("Bad token -> {word} when creating type name");
                 panic!("Compiler encountered something that is allowed but not yet implemented")
@@ -323,8 +323,8 @@ impl<'a> Lexer<'a> {
 
     fn new_class_region(&self, word: &str) -> Result<Token, Error> {
         match (Self::VALID_CLASS_REGIONS.contains(&word), word) {
-            (true, "public") => Ok(Token::PublicClassRegion("public".to_string())),
-            (true, "private") => Ok(Token::PrivateClassRegion("private".to_string())),
+            (true, "public") => Ok(Token::PublicClassRegion("public")),
+            (true, "private") => Ok(Token::PrivateClassRegion("private")),
             (true, _) => {
                 eprintln!("Bad token -> {word} when creating class region");
                 panic!("Compiler encountered something that is allowed but not yet implemented")
@@ -338,11 +338,11 @@ impl<'a> Lexer<'a> {
 
     fn new_declaration_keyword(&self, word: &str) -> Result<Token, Error> {
         match (Self::VALID_DECLARATION_KEYWORDS.contains(&word), word) {
-            (true, "class") => Ok(Token::ClassDeclaration("class".to_string())),
-            (true, "method") => Ok(Token::MethodDeclaration("method".to_string())),
-            (true, "function") => Ok(Token::FunctionDeclaration("function".to_string())),
-            (true, "constant") => Ok(Token::ConstantDeclaration("constant".to_string())),
-            (true, "variable") => Ok(Token::VariableDeclaration("variable".to_string())),
+            (true, "class") => Ok(Token::ClassDeclaration("class")),
+            (true, "method") => Ok(Token::MethodDeclaration("method")),
+            (true, "function") => Ok(Token::FunctionDeclaration("function")),
+            (true, "constant") => Ok(Token::ConstantDeclaration("constant")),
+            (true, "variable") => Ok(Token::VariableDeclaration("variable")),
             (true, _) => {
                 eprintln!("Bad token -> {word} when creating declaration keyword");
                 panic!("The compiler encountered a type that is allowed but not yet implemented")

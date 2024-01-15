@@ -1,5 +1,5 @@
 #[derive(Debug)]
-pub enum Token {
+pub enum Token<'a> {
     // TODO make tokens hold &strs that have lifetime equal to the token enum
     /* Numeric Literals */
     IntegerLiteral(isize),
@@ -7,14 +7,14 @@ pub enum Token {
     Punctuation(char),
     Identifier(String),
     /* Class Regions */
-    PublicClassRegion(String),
-    PrivateClassRegion(String),
+    PublicClassRegion(&'a str),
+    PrivateClassRegion(&'a str),
     /* Declarations */
-    ClassDeclaration(String),
-    FunctionDeclaration(String),
-    MethodDeclaration(String),
-    ConstantDeclaration(String),
-    VariableDeclaration(String),
+    ClassDeclaration(&'a str),
+    FunctionDeclaration(&'a str),
+    MethodDeclaration(&'a str),
+    ConstantDeclaration(&'a str),
+    VariableDeclaration(&'a str),
     /* Operators */
     PlusSign(char),
     MinusSign(char),
@@ -25,27 +25,27 @@ pub enum Token {
     GreaterThan(char),
     LessThan(char),
     /* Compound Operators */
-    IncrementAndAssign(String),
-    DecrementAndAssign(String),
-    MultiplyAndAssign(String),
-    DivideAndAssign(String),
-    ReturnTypeArrow(String),
-    EqualityCheck(String),
+    IncrementAndAssign(&'a str),
+    DecrementAndAssign(&'a str),
+    MultiplyAndAssign(&'a str),
+    DivideAndAssign(&'a str),
+    ReturnTypeArrow(&'a str),
+    EqualityCheck(&'a str),
     /* Grouping Symbols */
     LeftParenthesis(char),
     RightParenthesis(char),
     /* Types */
-    UnsignedEightBitInteger(String),
-    UnsignedSixteenBitInteger(String),
-    UnsignedThirtyTwoBitInteger(String),
-    UnsignedSixtyFourBitInteger(String),
-    SignedEightBitInteger(String),
-    SignedSixteenBitInteger(String),
-    SignedThirtyTwoBitInteger(String),
-    SignedSixtyFourBitInteger(String),
-    Boolean(String),
-    UnsignedSize(String),
-    SignedSize(String),
+    UnsignedEightBitInteger(&'a str),
+    UnsignedSixteenBitInteger(&'a str),
+    UnsignedThirtyTwoBitInteger(&'a str),
+    UnsignedSixtyFourBitInteger(&'a str),
+    SignedEightBitInteger(&'a str),
+    SignedSixteenBitInteger(&'a str),
+    SignedThirtyTwoBitInteger(&'a str),
+    SignedSixtyFourBitInteger(&'a str),
+    Boolean(&'a str),
+    UnsignedSize(&'a str),
+    SignedSize(&'a str),
     /* Scope Edge */
     LeftBracket(char),
     RightBracket(char),
