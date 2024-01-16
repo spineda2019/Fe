@@ -3,6 +3,10 @@ I really enjoy learning about compilers and tinkering, so I decided to start a
 side project to build a mini cmpiler in rust (hence the name Fe, referencing
 Iron, since this will run on rust)
 
+## The Formal Grammar
+Check out the <a href="https://github.com/spineda2019/Fe/blob/main/Grammar.md">formal grammer</a>
+I am working on for the Fe language. It is definitely still a work in progress!
+
 ## Motivations
 One thing I am aiming to implement in this pet project is having my rudimentary
 type system be very explicit, while still being readable. I want to deny
