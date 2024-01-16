@@ -8,8 +8,12 @@ recall if this is completely accurate in the mathematical world, but this will
 suffice for now.
 
 ```txt
-<program> ::= {<statement>}*
-<statement> ::= <assignment> | <expression> | <file-dropin>
+<program> ::= {<statement>}* {<definition>}*
+<statement> ::= <file-dropin> | <assignment> | <expression>
+<file-dropin> ::= dropin "<file-path>"
+<file-path> ::= <file-name> .fe | <folder-structure> <file-name> .fe
+<file-name> ::= <letter> | <letter> <file-name>
+<folder-structure> ::= <file-name> / | <folder-structure> <file-name> /
 <assignment> ::= <mutability-specifier> <identifier> = <expression>: <type> <punctuation>
 <mutability-specifier> ::= constant | variable
 <identifier> ::= <letter> | <letter> <identifier>
@@ -22,12 +26,15 @@ suffice for now.
 <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 <floating-point> ::= <integer> . <integer>
 <unary-operator> ::= + | - | !
-<binary-operator> ::= + | - | and | or | * | / | ->
+<binary-operator> ::= + | - | and | or | * | / 
 <postfix-compound-operator> ::= ++ | --
 <type> ::= uint8 | sint8 | uint16 | sint16 | uint32 | sint32 | uint64 | sint64 | boolean | ssize | usize
 <punctuation> ::= ;
-<file-dropin> ::= dropin "<file-path>"
-<file-path> ::> <file-name> .fe | <folder-structure> <file-name> .fe
-<file-name> ::> <letter> | <letter> <file-name>
-<folder-structure> ::= <file-name> / | <folder-structure> <file-name> /
+<definition> ::= <function-definition> | <class-definition> | <method-definition>
+<function-definition> ::= function <function-name> ({<argument>}*) <return-type-indicator> <return-type> <block>
+<function-name> ::= <letter> | <letter> <function-name>
+<argument> ::= <identifier> : <type> ,
+<return-type-indicator> ::= ->
+<return-type> ::= <type> | nothing
+<block> ::= { {<statement>}* }
 ```
